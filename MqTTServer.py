@@ -17,10 +17,8 @@ class MqTTSub:
         properties = None
         client.connect('your-ip', 1883, properties=properties)
         time.sleep(5)
-        client.subscribe('org/common')
+        client.subscribe('org/commons')
         time.sleep(2)
-        properties = Properties(PacketTypes.PUBLISH)
-        properties.ResponseTopic = 'org/responses/server'
         client.loop_forever()
 
 
@@ -36,8 +34,11 @@ class MqTTSub:
         msg = str(message.payload.decode("utf-8"))
         print('RECV Topic = ', message.topic)
         print('RECV MSG =', msg)
+        response_topic = message.properties.ResponseTopic
         properties = Properties(PacketTypes.PUBLISH)
-        client.publish('org/responses/client1',"Hi From Server", properties=properties)
+        print('Responding on response topic')
+        print(response_topic)
+        client.publish(response_topic,"Hi From Server", properties=properties)
 
     def on_disconnect(self,client, userdata, rc):
         print('Received Disconnect ', rc)

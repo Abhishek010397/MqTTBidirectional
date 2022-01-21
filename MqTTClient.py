@@ -20,8 +20,11 @@ class MqTTPub:
         client.subscribe('org/responses/client1')
         time.sleep(2)
         client.message_received_flag = False
+        print("Publish response topic")
         properties = Properties(PacketTypes.PUBLISH)
-        client.publish('org/common', "Hi From Client", properties=properties)
+        properties.ResponseTopic = 'org/responses/client1'
+        time.sleep(10)
+        client.publish('org/commons', "Hi From Client", properties=properties)
         while not client.message_received_flag:
             time.sleep(1)
         client.message_received_flag = False
